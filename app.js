@@ -17,6 +17,12 @@ app.get('/new-task', (req, res) => {
     res.render('new-task', { tasks });
 })
 
+app.get('/edit-task/:id', (req, res) => {
+    const taskId = req.params.id;
+    const task = tasks.find(p => p.id === taskId);
+    res.render('edit-task', { task });
+})
+
 
 app.post('/add-task', (req, res) => {
     const { description } = req.body;
@@ -45,6 +51,22 @@ app.post('/delete-task/:id', (req, res) => {
     }
     res.redirect('/');
 });
+
+
+app.post('/update-task/:id', (req, res) => {
+    const taskId = req.params.id;
+    const { description } = req.body;
+    const newTask = {
+        id: taskId,
+        description,
+    };
+    const tasksCopy = tasks.map(t =>
+        t.id === newTask.id ?
+            newTask : t);
+
+    tasks = tasksCopy;
+    res.redirect('/');
+})
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
